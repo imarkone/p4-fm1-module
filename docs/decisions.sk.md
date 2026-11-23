@@ -108,3 +108,22 @@ aby lícovali s 3D tlačeným predným panelom.
 ## D13. Napájanie: len USB-C 5 V
 
 Vo v1 bez batérie.
+
+## D14. Etapa 1 je prototyp na breadboarde z hotových modulov
+
+- **Rozhodnutie:** pred akýmkoľvek PCB rozbehať P4-NANO + 4" DSI displej + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
+  na káblikoch. Pozri [stage1-breadboard.sk.md](stage1-breadboard.sk.md).
+- **Prečo:** lacno overí displej, hodiny zvuku, USB host a ovládanie; nosná doska potom stavia na tom, čo funguje.
+- **Pridelenie pinov:** [pinmap.csv](pinmap.csv) je jediný zdroj pravdy pre firmvér aj KiCad.
+
+## D15. Stavová LED: RGB LED so spoločnou katódou na troch PWM pinoch, nie WS2812
+
+- **Prečo:** P4-NANO má len LED napájania. WS2812 potrebuje napájanie ≥3.5 V a dátovú úroveň nad 3.3 V logikou;
+  obyčajná RGB LED ide priamo z 3.3 V GPIO, aj ako THT diel na nosnej doske.
+
+## D16. Displej 4-DSI-TOUCH-A potvrdený pre ESP32-P4
+
+- Waveshare BSP `esp32_p4_platform` uvádza 4-DSI-TOUCH-A (ST7701, `esp_lcd_st7701`) ako otestovaný.
+- Panel je natívne na výšku 480×800: obraz FM-1 240×240 v 2× zaplní horných 480×480 a pod ním ostane 480×320,
+  bez akejkoľvek rotácie.
+- Napájanie: 5 V, ≥180 mA.

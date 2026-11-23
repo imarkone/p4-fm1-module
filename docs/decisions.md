@@ -111,3 +111,22 @@ so the 3D-printed front panel lines up.
 ## D13. Power: USB-C 5 V only
 
 No battery in v1.
+
+## D14. Stage 1 is a breadboard prototype with ready-made modules
+
+- **Decision:** before any PCB, bring up P4-NANO + 4" DSI display + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
+  on jumper wires. See [stage1-breadboard.md](stage1-breadboard.md).
+- **Why:** proves display, audio clocking, USB host and controls cheaply; the carrier board follows what works.
+- **Pin allocation:** [pinmap.csv](pinmap.csv) is the single source of truth for firmware and KiCad.
+
+## D15. Status LED: common-cathode RGB LED on three PWM pins, not WS2812
+
+- **Why:** the P4-NANO has only a power LED. WS2812 needs ≥3.5 V supply and a data level above 3.3 V logic;
+  a plain RGB LED runs directly from 3.3 V GPIOs, also as a through-hole part on the carrier board.
+
+## D16. Display 4-DSI-TOUCH-A confirmed for ESP32-P4
+
+- Waveshare's `esp32_p4_platform` BSP lists 4-DSI-TOUCH-A (ST7701, `esp_lcd_st7701`) as tested.
+- The panel is natively portrait 480×800: the FM-1 240×240 frame at 2× fills the top 480×480, leaving 480×320 below
+  without any rotation.
+- Power: 5 V, ≥180 mA.
