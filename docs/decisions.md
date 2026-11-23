@@ -168,3 +168,14 @@ No battery in v1.
 - **Not used:** onboard speaker and amplifier, microphones, camera connector, battery connector (no battery in v1).
 - **Source:** Waveshare schematic Rev1.2 and the BSP hardware audit in
   [waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3](https://github.com/waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3).
+
+## D19. Debug encoder and status LED: on a carrier-board overhang, right of the display
+
+- **Decision:** the carrier board extends past the right edge of the display. The EC11 encoder is mounted on the
+  front-facing side of that overhang with its shaft through the front panel; the RGB LED sits directly above it.
+- **Why:** the carrier sits behind the display, so anything on its back faces away from the user. The 10 mm
+  glass border cannot hold controls. The overhang keeps everything on one plug-in board.
+- **Mechanics:** the back of the main PCB is 7.15 mm behind the glass front and J3 adds 5.1 mm, so the carrier
+  surface is roughly 15 mm behind the front; an EC11 with a 20 mm shaft reaches through the panel. Exact values
+  follow from the KiCad STEP export.
+- **Rear edge:** audio jacks, TRS MIDI, USB-A host and USB-C power stay on the carrier's rear-facing side.

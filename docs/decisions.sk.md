@@ -163,3 +163,13 @@ Vo v1 bez batérie.
 - **Nepoužíva sa:** reproduktor a zosilňovač na doske, mikrofóny, konektor kamery, konektor batérie (v1 bez batérie).
 - **Zdroj:** schéma Waveshare Rev1.2 a audit hardvéru BSP v
   [waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3](https://github.com/waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3).
+
+## D19. Ladiaci enkóder a stavová LED: na presahu nosnej dosky, vpravo od displeja
+
+- **Rozhodnutie:** nosná doska presahuje za pravý okraj displeja. Enkóder EC11 je osadený na prednej strane presahu
+  a jeho hriadeľ prechádza predným panelom; RGB LED je priamo nad ním.
+- **Prečo:** nosná doska je za displejom, takže všetko na jej zadnej strane mieri od používateľa. Sklenený okraj
+  široký 10 mm ovládacie prvky neunesie. Presah drží všetko na jednej zasúvacej doske.
+- **Mechanika:** zadná strana hlavného PCB je 7.15 mm za čelom skla a J3 pridá 5.1 mm, takže plocha nosnej dosky je
+  asi 15 mm za čelom; EC11 s 20 mm hriadeľom prejde panelom. Presné hodnoty dá STEP export z KiCadu.
+- **Zadná strana:** audio jacky, TRS MIDI, USB-A host a USB-C napájanie ostávajú na zadnej strane nosnej dosky.
