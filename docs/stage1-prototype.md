@@ -5,9 +5,8 @@
 Goal: bring up the core system with ready-made modules and jumper wires before any PCB is designed.
 Everything learned here feeds the carrier board.
 
-No breadboard: breadboard contacts work loose and the setup cannot be carried around. Modules connect to the
-40-pin header with female–female jumper wires; the LED and the encoder get soldered pigtails ending in Dupont
-female connectors (see [Wiring method](#wiring-method)).
+No breadboard: breadboard contacts work loose and the setup cannot be carried around. All modules, including the LED and the encoder,
+connect to the 40-pin header with female–female jumper wires (see [Wiring method](#wiring-method)).
 
 ## What stage 1 proves
 
@@ -25,8 +24,8 @@ MIDI over TRS (IN/OUT) is stage 2 (carrier board); its pins are already reserved
 | Waveshare ESP32-P4-WIFI6-Touch-LCD-4.3 (WS-33874) | ESP32-P4 board fixed to the back of a 4.3" 480×800 touch panel (ST7701 + GT911). 40-pin header (J3). Two Type-C ports: USB-UART (power, flashing, serial log) and USB 2.0 HS OTG |
 | PCM5102A module (GY-PCM5102 type, purple, with 3.5 mm jack) | Line out |
 | PCM1808 module | Line in; needs 5 V (analog) and 3.3 V (digital) |
-| EC11 rotary encoder with push button | Soldered pigtail, 4 wires, one 2×2 Dupont housing |
-| 5 mm RGB LED, common cathode | Plus 3 series resistors in the cable, 4 wires, one 2×2 Dupont housing |
+| Encoder module (EC11, 20 pulses/turn, push button; pins GND, S1, S2, Key, 5V) | Pull-ups and RC filter on the module; powered from 3.3 V |
+| RGB LED module KY-016 (pins −, R, G, B) | Common cathode, 150 Ω resistors on the module |
 | Female–female jumper wires, 20 cm | Modules to the 40-pin header |
 | USB-A female cable-solder connector | Pigtail to J3 for the controller (see [Controller](#controller)) |
 | M-VAVE SMK-25 II | USB-MIDI controller |
@@ -80,40 +79,41 @@ The machine-readable allocation is [pinmap.csv](pinmap.csv); firmware and the Ki
 | WS / LRCK | GPIO28 (16) | LCK | LRC |
 | Data to DAC | GPIO5 (11) | DIN | – |
 | Data from ADC | GPIO4 (14) | – | OUT |
-| 3.3 V | 3V3 (2, 18) | VIN | 3.3V |
-| 5 V | 5V (1, 3) | – | +5V |
+| 3.3 V | 3V3 (2, 18) | – | 3.3V |
+| 5 V | 5V (1, 3) | VIN | +5V |
 | GND | GND (5, 13, 19) | GND | GND |
+
+The PCM5102A module has its own 3.3 V regulators, so VIN takes 5 V; its logic still runs at 3.3 V and matches
+the P4.
 
 Module configuration:
 
-- **PCM5102A (GY-PCM5102):** set the four solder bridges on the back: FLT = L, DEMP = L, XSMT = H (unmute),
-  FMT = L (I2S). With XSMT left open the module is silent.
+- **PCM5102A (GY-PCM5102):** the four solder bridges on the back are H1L = FLT, H2L = DEMP, H3L = XSMT,
+  H4L = FMT. Set H1L = L, H2L = L, H3L = H (unmute), H4L = L (I2S). With XSMT low the module is silent. The two
+  small pads next to SCK on the front ground SCK; they must stay **open**, because SCK carries MCLK from the P4.
 - **PCM1808:** MD0 = L, MD1 = L (slave mode), FMT = L (I2S); on the LaskaKit module FMT is printed as "PMT".
   The chip accepts a system clock of 256, 384 or 512 fs; firmware drives 256 fs.
 
-### Encoder and LED
+### Encoder and LED (stage 1 uses ready-made modules)
 
-| Part | P4 GPIO (J3 pin) | Notes |
+| Module pin | P4 GPIO (J3 pin) | Notes |
 |---|---|---|
-| LED red | GPIO32 (31) | via 220 Ω |
-| LED green | GPIO49 (32) | via 100 Ω |
-| LED common cathode | GND (33) | |
-| LED blue | GPIO50 (34) | via 100 Ω |
-| EC11 A | GPIO47 (37) | internal pull-ups |
-| EC11 B | GPIO52 (38) | |
-| EC11 switch | GPIO48 (39) | |
-| EC11 common pin + other switch pin | GND (40) | join both on the encoder side, one wire |
+| RGB module (KY-016) R | GPIO32 (31) | 150 Ω on the module |
+| RGB module G | GPIO49 (32) | 150 Ω on the module |
+| RGB module − (common cathode) | GND (33) | |
+| RGB module B | GPIO50 (34) | 150 Ω on the module |
+| Encoder module S1 | GPIO47 (37) | 10 kΩ pull-up and RC filter on the module |
+| Encoder module S2 | GPIO52 (38) | |
+| Encoder module Key | GPIO48 (39) | |
+| Encoder module GND | GND (40) | |
+| Encoder module "5V" | **3V3 (18)** | never 5 V: the pull-ups would put 5 V on P4 pins, which are not 5 V tolerant |
 
-Resistor values keep each colour at roughly 3–6 mA from 3.3 V (red Vf ≈ 2 V, green/blue Vf ≈ 3 V).
+The module resistors are sized for 5 V; at 3.3 V red runs at about 8–9 mA and green/blue at 2–4 mA. Firmware
+balances the colours with PWM.
 
 ### Wiring method
 
-- **LED:** the three resistors sit inline in the R, G and B wires (soldered into the cable, covered with
-  heat-shrink); the four wires end in one 2×2 Dupont housing on pins 31–34. It plugs on in one move and cannot be
-  plugged in shifted by a row.
-- **Encoder:** four wires in one 2×2 Dupont housing on pins 37–40. On the encoder side the common pin and the second
-  switch pin are joined, so a single GND wire is enough.
-- **Modules:** female–female jumper wires from the module pins to the header.
+- Separate female–female jumper wires from the module pins to the header; no soldering needed in stage 1.
 - On the carrier board the LED, resistors and encoder are soldered to the PCB; nobody wires them by hand.
 
 ### Display

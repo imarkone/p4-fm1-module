@@ -179,3 +179,15 @@ No battery in v1.
   surface is roughly 15 mm behind the front; an EC11 with a 20 mm shaft reaches through the panel. Exact values
   follow from the KiCad STEP export.
 - **Rear edge:** audio jacks, TRS MIDI, USB-A host and USB-C power stay on the carrier's rear-facing side.
+
+## D20. Carrier board takes the ready-made audio modules
+
+- **Decision:** the carrier has 2.54 mm pin rows matching the GY-PCM5102 (PCM5102A) and LaskaKit PCM1808 modules;
+  the modules are soldered on as they come. The chips themselves stay as chosen in D6.
+- **Why:** the same modules are proven in stage 1, they are cheap and available, and builders solder only
+  through-hole pins; no fine-pitch SMD on the carrier.
+- **Analog outputs:** the GY-PCM5102 exposes LROUT/ROUT/AGND as pads; the carrier takes audio from those pads to
+  its own jacks and the NJM4556 stage (D7, D8). The module's own 3.5 mm jack points along the PCB, so it is not used.
+- **Encoder and LED stay discrete THT parts on the carrier (D15, D19);** the stage 1 modules for them are
+  prototyping aids only.
+- **Open point:** module outlines and pin positions are taken from the delivered modules with a caliper.

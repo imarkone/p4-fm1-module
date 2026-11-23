@@ -5,9 +5,8 @@
 Cieľ: rozbehať jadro systému z hotových modulov a prepojovacích káblikov skôr, než navrhneme akékoľvek PCB.
 Všetko, čo sa tu naučíme, ide do nosnej dosky. Pri rozdiele platí anglická verzia.
 
-Bez breadboardu: kontakty v ňom sa ľahko uvoľnia a zostava sa nedá prenášať. Moduly idú na 40-pinovú lištu
-káblikmi samica–samica; LED a enkóder majú prispájkované vývody zakončené Dupont samicami
-(pozri [Spôsob zapojenia](#spôsob-zapojenia)).
+Bez breadboardu: kontakty v ňom sa ľahko uvoľnia a zostava sa nedá prenášať. Všetky moduly vrátane LED a enkódera idú na
+40-pinovú lištu káblikmi samica–samica (pozri [Spôsob zapojenia](#spôsob-zapojenia)).
 
 ## Čo etapa 1 overí
 
@@ -25,8 +24,8 @@ MIDI cez TRS (IN/OUT) je etapa 2 (nosná doska); piny sú už rezervované.
 | Waveshare ESP32-P4-WIFI6-Touch-LCD-4.3 (WS-33874) | doska ESP32-P4 pripevnená na zadnej strane 4.3" dotykového panelu 480×800 (ST7701 + GT911). 40-pinová lišta (J3). Dva Type-C: USB-UART (napájanie, nahrávanie, sériový log) a USB 2.0 HS OTG |
 | modul PCM5102A (typ GY-PCM5102, fialový, s 3.5 mm jackom) | linkový výstup |
 | modul PCM1808 | linkový vstup; potrebuje 5 V (analóg) a 3.3 V (digitál) |
-| enkóder EC11 s tlačidlom | prispájkované vývody, 4 vodiče, jedno Dupont puzdro 2×2 |
-| 5 mm RGB LED, spoločná katóda | + 3 odpory v kábli, 4 vodiče, jedno Dupont puzdro 2×2 |
+| modul enkódera (EC11, 20 impulzov na otáčku, tlačidlo; piny GND, S1, S2, Key, 5V) | pull-upy a RC filter na module; napájanie 3.3 V |
+| RGB LED modul KY-016 (piny −, R, G, B) | spoločná katóda, odpory 150 Ω na module |
 | káblíky samica–samica, 20 cm | moduly na 40-pinovú lištu |
 | USB-A samica, káblový spájkovací konektor | vývody na J3 pre ovládač (pozri [Ovládač](#ovládač)) |
 | M-VAVE SMK-25 II | USB-MIDI ovládač |
@@ -80,39 +79,40 @@ Strojovo čitateľné pridelenie je [pinmap.csv](pinmap.csv); firmvér aj návrh
 | WS / LRCK | GPIO28 (16) | LCK | LRC |
 | dáta do DAC | GPIO5 (11) | DIN | – |
 | dáta z ADC | GPIO4 (14) | – | OUT |
-| 3.3 V | 3V3 (2, 18) | VIN | 3.3V |
-| 5 V | 5V (1, 3) | – | +5V |
+| 3.3 V | 3V3 (2, 18) | – | 3.3V |
+| 5 V | 5V (1, 3) | VIN | +5V |
 | GND | GND (5, 13, 19) | GND | GND |
+
+Modul PCM5102A má vlastné 3.3 V stabilizátory, takže VIN berie 5 V; jeho logika aj tak beží na 3.3 V a sedí s P4.
 
 Nastavenie modulov:
 
-- **PCM5102A (GY-PCM5102):** na zadnej strane zaletuj štyri mostíky: FLT = L, DEMP = L, XSMT = H (zrušenie stlmenia),
-  FMT = L (I2S). Ak XSMT ostane rozpojený, modul je ticho.
+- **PCM5102A (GY-PCM5102):** štyri mostíky na zadnej strane sú H1L = FLT, H2L = DEMP, H3L = XSMT, H4L = FMT.
+  Nastav H1L = L, H2L = L, H3L = H (zrušenie stlmenia), H4L = L (I2S). Pri XSMT v stave L je modul ticho.
+  Dve malé plôšky vedľa SCK na prednej strane uzemňujú SCK; musia ostať **rozpojené**, lebo SCK nesie MCLK z P4.
 - **PCM1808:** MD0 = L, MD1 = L (slave režim), FMT = L (I2S); na module LaskaKit je FMT popísaný ako „PMT“.
   Čip berie systémové hodiny 256, 384 alebo 512 fs; firmvér pošle 256 fs.
 
-### Enkóder a LED
+### Enkóder a LED (etapa 1 používa hotové moduly)
 
-| Diel | GPIO na P4 (pin J3) | Poznámka |
+| Pin modulu | GPIO na P4 (pin J3) | Poznámka |
 |---|---|---|
-| LED červená | GPIO32 (31) | cez 220 Ω |
-| LED zelená | GPIO49 (32) | cez 100 Ω |
-| spoločná katóda LED | GND (33) | |
-| LED modrá | GPIO50 (34) | cez 100 Ω |
-| EC11 A | GPIO47 (37) | interné pull-upy |
-| EC11 B | GPIO52 (38) | |
-| EC11 tlačidlo | GPIO48 (39) | |
-| stredný pin EC11 + druhý pin tlačidla | GND (40) | spoj oba na strane enkódera, jeden vodič |
+| RGB modul (KY-016) R | GPIO32 (31) | 150 Ω na module |
+| RGB modul G | GPIO49 (32) | 150 Ω na module |
+| RGB modul − (spoločná katóda) | GND (33) | |
+| RGB modul B | GPIO50 (34) | 150 Ω na module |
+| modul enkódera S1 | GPIO47 (37) | 10 kΩ pull-up a RC filter na module |
+| modul enkódera S2 | GPIO52 (38) | |
+| modul enkódera Key | GPIO48 (39) | |
+| modul enkódera GND | GND (40) | |
+| modul enkódera „5V“ | **3V3 (18)** | nikdy nie 5 V: pull-upy by dali 5 V na piny P4, ktoré 5 V neznesú |
 
-Hodnoty odporov držia každú farbu na asi 3–6 mA z 3.3 V (červená Vf ≈ 2 V, zelená/modrá Vf ≈ 3 V).
+Odpory na moduloch sú rátané na 5 V; pri 3.3 V ide červená asi 8–9 mA, zelená a modrá 2–4 mA. Firmvér vyrovná
+farby cez PWM.
 
 ### Spôsob zapojenia
 
-- **LED:** tri odpory sú priamo v kábli, vo vodičoch R, G a B (prispájkované, pod zmršťovačkou); štyri vodiče
-  končia jedným Dupont puzdrom 2×2 na pinoch 31–34. Nasadí sa jedným pohybom a nedá sa nasadiť posunuté o rad.
-- **Enkóder:** štyri vodiče v jednom Dupont puzdre 2×2 na pinoch 37–40. Na strane enkódera sú stredný pin a druhý
-  pin tlačidla spojené, takže stačí jeden vodič GND.
-- **Moduly:** káblikmi samica–samica z pinov modulu na lištu.
+- Samostatné káblíky samica–samica z pinov modulov na lištu; v etape 1 sa nič nespájkuje.
 - Na nosnej doske sú LED, odpory aj enkóder prispájkované na PCB; nikto ich nezapája ručne.
 
 ### Displej

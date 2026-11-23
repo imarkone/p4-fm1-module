@@ -173,3 +173,14 @@ Vo v1 bez batérie.
 - **Mechanika:** zadná strana hlavného PCB je 7.15 mm za čelom skla a J3 pridá 5.1 mm, takže plocha nosnej dosky je
   asi 15 mm za čelom; EC11 s 20 mm hriadeľom prejde panelom. Presné hodnoty dá STEP export z KiCadu.
 - **Zadná strana:** audio jacky, TRS MIDI, USB-A host a USB-C napájanie ostávajú na zadnej strane nosnej dosky.
+
+## D20. Nosná doska nesie hotové audio moduly
+
+- **Rozhodnutie:** nosná doska má lišty s rozstupom 2.54 mm podľa modulov GY-PCM5102 (PCM5102A) a PCM1808
+  od LaskaKitu; moduly sa prispájkujú tak, ako prídu. Samotné čipy ostávajú podľa D6.
+- **Prečo:** tie isté moduly sú overené v etape 1, sú lacné a dostupné a staviteľ spájkuje len THT piny;
+  žiadne jemné SMD na nosnej doske.
+- **Analógové výstupy:** GY-PCM5102 má vyvedené plôšky LROUT/ROUT/AGND; nosná doska z nich vedie zvuk na vlastné
+  jacky a stupeň NJM4556 (D7, D8). Vlastný 3.5 mm jack modulu smeruje pozdĺž PCB, preto sa nepoužije.
+- **Enkóder a LED ostávajú samostatné THT diely na nosnej doske (D15, D19);** moduly z etapy 1 slúžia len na prototyp.
+- **Otvorený bod:** obrysy modulov a polohy pinov sa odmerajú posuvným meradlom na dodaných moduloch.
