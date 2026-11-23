@@ -1,9 +1,13 @@
-# Stage 1: breadboard prototype (no PCB)
+# Stage 1: wired prototype (no PCB, no breadboard)
 
-**English** · [Slovenčina](stage1-breadboard.sk.md)
+**English** · [Slovenčina](stage1-prototype.sk.md)
 
 Goal: bring up the core system with ready-made modules and jumper wires before any PCB is designed.
 Everything learned here feeds the carrier board.
+
+No breadboard: breadboard contacts work loose and the setup cannot be carried around. Modules connect to the
+P4-NANO header with female–female jumper wires; the LED and the encoder get soldered pigtails ending in Dupont
+female connectors (see [Wiring method](#wiring-method)).
 
 ## What stage 1 proves
 
@@ -22,9 +26,9 @@ MIDI over TRS (IN/OUT) is stage 2 (carrier board); its pins are already reserved
 | Waveshare 4-DSI-TOUCH-A (4", 480×800) | ST7701 + GT911. Listed as tested in Waveshare's `esp32_p4_platform` BSP. Needs 5 V, ≥180 mA. Outline 108.30 × 65.10 mm, active area 86.40 × 51.84 mm |
 | PCM5102A module (GY-PCM5102 type, purple, with 3.5 mm jack) | Line out |
 | PCM1808 module | Line in; needs 5 V (analog) and 3.3 V (digital) |
-| EC11 rotary encoder with push button | Breadboard-mountable |
-| 5 mm RGB LED, common cathode | Plus 3 series resistors (see below) |
-| Breadboard, female–female and female–male jumper wires | |
+| EC11 rotary encoder with push button | Soldered pigtail, 4 wires |
+| 5 mm RGB LED, common cathode | Plus 3 series resistors, soldered pigtail, 4 wires |
+| Female–female jumper wires, 20 cm | Modules to the P4-NANO header |
 | M-VAVE SMK-25 II | USB-A on the P4-NANO |
 
 ### Why a plain RGB LED and not WS2812
@@ -101,15 +105,26 @@ Module configuration:
 
 | Part | P4 GPIO (header pin) | Notes |
 |---|---|---|
-| EC11 A | GPIO45 (R19) | Encoder common pin to GND; internal pull-ups |
+| EC11 A | GPIO45 (R19) | Internal pull-ups |
 | EC11 B | GPIO46 (R17) | |
-| EC11 switch | GPIO54 (R13) | Other switch pin to GND |
+| EC11 switch | GPIO54 (R13) | |
+| EC11 common pin + other switch pin | GND (R18) | Join both on the encoder side, one wire |
 | LED red | GPIO2 (R11) | via 220 Ω |
 | LED green | GPIO3 (R9) | via 100 Ω |
 | LED blue | GPIO6 (R12) | via 100 Ω |
-| LED common cathode | GND | |
+| LED common cathode | GND (R10) | |
 
 Resistor values keep each colour at roughly 3–6 mA from 3.3 V (red Vf ≈ 2 V, green/blue Vf ≈ 3 V).
+
+### Wiring method
+
+- **LED:** the three resistors sit inline in the R, G and B wires (soldered into the cable, covered with
+  heat-shrink); the four wires end in Dupont female contacts. R9 (G), R10 (GND), R11 (R) and R12 (B) form a 2×2 block on the right header, so one
+  2×2 Dupont housing plugs the whole LED on in one move and cannot be plugged in shifted by a row.
+- **Encoder:** four wires (A, B, switch, GND) to Dupont female contacts on R19, R17, R13 and R18. On the encoder
+  side the common pin and the second switch pin are joined, so a single GND wire is enough.
+- **Modules:** female–female jumper wires from the module pins to the P4-NANO header.
+- On the carrier board the LED, resistors and encoder are soldered to the PCB; nobody wires them by hand.
 
 ### Display
 

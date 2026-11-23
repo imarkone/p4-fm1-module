@@ -112,10 +112,10 @@ so the 3D-printed front panel lines up.
 
 No battery in v1.
 
-## D14. Stage 1 is a breadboard prototype with ready-made modules
+## D14. Stage 1 is a wired prototype with ready-made modules
 
 - **Decision:** before any PCB, bring up P4-NANO + 4" DSI display + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
-  on jumper wires. See [stage1-breadboard.md](stage1-breadboard.md).
+  on jumper wires. See [stage1-prototype.md](stage1-prototype.md).
 - **Why:** proves display, audio clocking, USB host and controls cheaply; the carrier board follows what works.
 - **Pin allocation:** [pinmap.csv](pinmap.csv) is the single source of truth for firmware and KiCad.
 
@@ -130,3 +130,12 @@ No battery in v1.
 - The panel is natively portrait 480×800: the FM-1 240×240 frame at 2× fills the top 480×480, leaving 480×320 below
   without any rotation.
 - Power: 5 V, ≥180 mA.
+
+## D17. Stage 1 without a breadboard: soldered pigtails with Dupont connectors
+
+- **Decision:** no breadboard. Modules connect to the P4-NANO header with female–female jumper wires. The RGB LED
+  with its resistors and the encoder get soldered pigtails ending in Dupont female contacts; the LED plugs on as one
+  2×2 housing on R9–R12.
+- **Why:** a breadboard comes apart when carried or knocked and adds unreliable contacts while debugging.
+  Soldered pigtails survive transport and testing.
+- **Carrier board:** the LED, resistors and encoder are on the PCB; users wire nothing by hand.

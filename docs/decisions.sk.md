@@ -109,10 +109,10 @@ aby lícovali s 3D tlačeným predným panelom.
 
 Vo v1 bez batérie.
 
-## D14. Etapa 1 je prototyp na breadboarde z hotových modulov
+## D14. Etapa 1 je prototyp na kábloch z hotových modulov
 
 - **Rozhodnutie:** pred akýmkoľvek PCB rozbehať P4-NANO + 4" DSI displej + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
-  na káblikoch. Pozri [stage1-breadboard.sk.md](stage1-breadboard.sk.md).
+  na káblikoch. Pozri [stage1-prototype.sk.md](stage1-prototype.sk.md).
 - **Prečo:** lacno overí displej, hodiny zvuku, USB host a ovládanie; nosná doska potom stavia na tom, čo funguje.
 - **Pridelenie pinov:** [pinmap.csv](pinmap.csv) je jediný zdroj pravdy pre firmvér aj KiCad.
 
@@ -127,3 +127,11 @@ Vo v1 bez batérie.
 - Panel je natívne na výšku 480×800: obraz FM-1 240×240 v 2× zaplní horných 480×480 a pod ním ostane 480×320,
   bez akejkoľvek rotácie.
 - Napájanie: 5 V, ≥180 mA.
+
+## D17. Etapa 1 bez breadboardu: prispájkované vývody s Dupont konektormi
+
+- **Rozhodnutie:** žiadny breadboard. Moduly idú na lištu P4-NANO káblikmi samica–samica. RGB LED s odpormi
+  a enkóder dostanú prispájkované vývody zakončené Dupont samicami; LED sedí ako jedno puzdro 2×2 na P9–P12.
+- **Prečo:** breadboard sa pri prenášaní a otrasoch rozpája a pri hľadaní chýb pridáva neistý kontakt.
+  Spájkované vývody vydržia prenos aj testovanie.
+- **Nosná doska:** LED, odpory a enkóder sú tam priamo na PCB, používateľ nič ručne nezapája.

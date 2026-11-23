@@ -1,9 +1,13 @@
-# Etapa 1: prototyp na breadboarde (bez PCB)
+# Etapa 1: prototyp na kábloch (bez PCB, bez breadboardu)
 
-[English](stage1-breadboard.md) · **Slovenčina**
+[English](stage1-prototype.md) · **Slovenčina**
 
 Cieľ: rozbehať jadro systému z hotových modulov a prepojovacích káblikov skôr, než navrhneme akékoľvek PCB.
 Všetko, čo sa tu naučíme, ide do nosnej dosky. Pri rozdiele platí anglická verzia.
+
+Bez breadboardu: kontakty v ňom sa ľahko uvoľnia a zostava sa nedá prenášať. Moduly idú na lištu P4-NANO
+káblikmi samica–samica; LED a enkóder majú prispájkované vývody zakončené Dupont samicami
+(pozri [Spôsob zapojenia](#spôsob-zapojenia)).
 
 ## Čo etapa 1 overí
 
@@ -22,9 +26,9 @@ MIDI cez TRS (IN/OUT) je etapa 2 (nosná doska); piny sú už rezervované.
 | Waveshare 4-DSI-TOUCH-A (4", 480×800) | ST7701 + GT911. Waveshare BSP `esp32_p4_platform` ho uvádza ako otestovaný. Potrebuje 5 V, ≥180 mA. Rozmer 108.30 × 65.10 mm, aktívna plocha 86.40 × 51.84 mm |
 | modul PCM5102A (typ GY-PCM5102, fialový, s 3.5 mm jackom) | linkový výstup |
 | modul PCM1808 | linkový vstup; potrebuje 5 V (analóg) a 3.3 V (digitál) |
-| enkóder EC11 s tlačidlom | do breadboardu |
-| 5 mm RGB LED, spoločná katóda | + 3 odpory (pozri nižšie) |
-| breadboard, káblíky samica–samica a samica–samec | |
+| enkóder EC11 s tlačidlom | prispájkované vývody, 4 vodiče |
+| 5 mm RGB LED, spoločná katóda | + 3 odpory, prispájkované vývody, 4 vodiče |
+| káblíky samica–samica, 20 cm | moduly na lištu P4-NANO |
 | M-VAVE SMK-25 II | do USB-A na P4-NANO |
 
 ### Prečo obyčajná RGB LED a nie WS2812
@@ -101,15 +105,26 @@ Nastavenie modulov:
 
 | Diel | GPIO na P4 (pin lišty) | Poznámka |
 |---|---|---|
-| EC11 A | GPIO45 (P19) | stredný pin enkódera na GND; interné pull-upy |
+| EC11 A | GPIO45 (P19) | interné pull-upy |
 | EC11 B | GPIO46 (P17) | |
-| EC11 tlačidlo | GPIO54 (P13) | druhý pin tlačidla na GND |
+| EC11 tlačidlo | GPIO54 (P13) | |
+| stredný pin EC11 + druhý pin tlačidla | GND (P18) | spoj oba na strane enkódera, jeden vodič |
 | LED červená | GPIO2 (P11) | cez 220 Ω |
 | LED zelená | GPIO3 (P9) | cez 100 Ω |
 | LED modrá | GPIO6 (P12) | cez 100 Ω |
-| spoločná katóda LED | GND | |
+| spoločná katóda LED | GND (P10) | |
 
 Hodnoty odporov držia každú farbu na asi 3–6 mA z 3.3 V (červená Vf ≈ 2 V, zelená/modrá Vf ≈ 3 V).
+
+### Spôsob zapojenia
+
+- **LED:** tri odpory sú priamo v kábli, vo vodičoch R, G a B (prispájkované, pod zmršťovačkou); štyri vodiče
+  končia Dupont samicami. P9 (G), P10 (GND), P11 (R) a P12 (B) tvoria na pravej lište blok 2×2, takže jedno Dupont puzdro 2×2
+  nasadí celú LED naraz a nedá sa nasadiť posunuté o rad.
+- **Enkóder:** štyri vodiče (A, B, tlačidlo, GND) s Dupont samicami na P19, P17, P13 a P18. Na strane enkódera
+  sú stredný pin a druhý pin tlačidla spojené, takže stačí jeden vodič GND.
+- **Moduly:** káblikmi samica–samica z pinov modulu na lištu P4-NANO.
+- Na nosnej doske sú LED, odpory aj enkóder prispájkované na PCB; nikto ich nezapája ručne.
 
 ### Displej
 
