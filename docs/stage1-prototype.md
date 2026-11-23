@@ -28,7 +28,7 @@ MIDI over TRS (IN/OUT) is stage 2 (carrier board); its pins are already reserved
 | EC11 rotary encoder with push button | Soldered pigtail, 4 wires, one 2×2 Dupont housing |
 | 5 mm RGB LED, common cathode | Plus 3 series resistors in the cable, 4 wires, one 2×2 Dupont housing |
 | Female–female jumper wires, 20 cm | Modules to the 40-pin header |
-| Powered USB hub or USB-C OTG adapter with a power input | The OTG port does not supply 5 V (see [Controller](#controller)) |
+| USB-A female cable-solder connector | Pigtail to J3 for the controller (see [Controller](#controller)) |
 | M-VAVE SMK-25 II | USB-MIDI controller |
 
 ### Why a plain RGB LED and not WS2812
@@ -123,8 +123,20 @@ Built in. Touch (GT911) is on the onboard I2C bus (GPIO7/8); the BSP polls it, t
 ### Controller
 
 The OTG Type-C port has no 5 V output: its VBUS feeds the board through an ideal-diode circuit (AO3401 + MMDT3906)
-and reverse current is blocked. A controller plugged in through a plain OTG adapter gets no power. For stage 1 use a
-powered USB hub or a USB-C OTG adapter with its own power input. The board itself is powered from the USB-UART Type-C.
+and reverse current is blocked. A controller plugged in through a plain OTG adapter gets no power. The board itself is powered from the USB-UART Type-C.
+
+Stage 1 uses the same path as the carrier board: a USB-A female connector on a pigtail to J3.
+
+| USB-A pin | J3 pin |
+|---|---|
+| 1 VBUS | 1 or 3 (5V) |
+| 2 D− | 25 (USBD_N) |
+| 3 D+ | 27 (USBD_P) |
+| 4 GND | 26 |
+
+Keep the D−/D+ wires short (20 cm) and twisted together. Leave the onboard OTG Type-C empty: it shares the same
+data lines. The controller is a full-speed device, so jumper wires are good enough. A powered USB hub on the OTG
+Type-C also works as a fallback.
 
 The carrier board solves this permanently: the HS OTG data lines are also on J3 (pins 25/27), so the carrier gets
 its own USB-A host port with 5 V from the carrier supply.

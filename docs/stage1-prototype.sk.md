@@ -28,7 +28,7 @@ MIDI cez TRS (IN/OUT) je etapa 2 (nosná doska); piny sú už rezervované.
 | enkóder EC11 s tlačidlom | prispájkované vývody, 4 vodiče, jedno Dupont puzdro 2×2 |
 | 5 mm RGB LED, spoločná katóda | + 3 odpory v kábli, 4 vodiče, jedno Dupont puzdro 2×2 |
 | káblíky samica–samica, 20 cm | moduly na 40-pinovú lištu |
-| USB hub s vlastným napájaním alebo USB-C OTG redukcia s napájacím vstupom | OTG port nedáva 5 V (pozri [Ovládač](#ovládač)) |
+| USB-A samica, káblový spájkovací konektor | vývody na J3 pre ovládač (pozri [Ovládač](#ovládač)) |
 | M-VAVE SMK-25 II | USB-MIDI ovládač |
 
 ### Prečo obyčajná RGB LED a nie WS2812
@@ -122,8 +122,19 @@ Je súčasťou dosky. Dotyk (GT911) je na I2C zbernici dosky (GPIO7/8); BSP ho �
 ### Ovládač
 
 OTG Type-C nemá výstup 5 V: jeho VBUS napája dosku cez obvod ideálnej diódy (AO3401 + MMDT3906) a spätný prúd je
-zablokovaný. Ovládač zapojený cez obyčajnú OTG redukciu nedostane napájanie. V etape 1 použi USB hub s vlastným
-napájaním alebo USB-C OTG redukciu s napájacím vstupom. Samotná doska sa napája z Type-C USB-UART.
+zablokovaný. Ovládač zapojený cez obyčajnú OTG redukciu nedostane napájanie. Samotná doska sa napája z Type-C USB-UART.
+
+Etapa 1 použije tú istú cestu ako nosná doska: USB-A samicu na vývodoch do J3.
+
+| pin USB-A | pin J3 |
+|---|---|
+| 1 VBUS | 1 alebo 3 (5V) |
+| 2 D− | 25 (USBD_N) |
+| 3 D+ | 27 (USBD_P) |
+| 4 GND | 26 |
+
+Vodiče D−/D+ drž krátke (20 cm) a spolu skrútené. OTG Type-C na doske nechaj prázdny, zdieľa tie isté dátové linky.
+Ovládač je full-speed zariadenie, prepojovacie káble stačia. Ako záloha funguje aj USB hub s napájaním na OTG Type-C.
 
 Nosná doska to vyrieši natrvalo: dátové linky HS OTG sú aj na J3 (piny 25/27), takže nosná doska dostane vlastný
 USB-A host port s 5 V zo svojho napájania.
