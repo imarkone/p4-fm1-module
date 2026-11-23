@@ -1,29 +1,36 @@
 gpio,header,header_pin,function,direction,connects_to,stage,notes
-GPIO20,left,13,I2S_MCLK,out,PCM5102A SCK + PCM1808 SCK,1,12.288 MHz at 48 kHz (256 fs)
-GPIO21,left,15,I2S_BCLK,out,PCM5102A BCK + PCM1808 BCK,1,P4 is I2S clock master
-GPIO22,left,16,I2S_WS,out,PCM5102A LCK + PCM1808 LRC,1,
-GPIO23,left,7,I2S_DOUT,out,PCM5102A DIN,1,
-GPIO32,left,23,I2S_DIN,in,PCM1808 OUT,1,
-GPIO45,right,19,ENC_A,in,EC11 A,1,internal pull-up
-GPIO46,right,17,ENC_B,in,EC11 B,1,internal pull-up
-GPIO54,right,13,ENC_SW,in,EC11 switch,1,internal pull-up; hold at boot = safe mode
-GPIO2,right,11,LED_R,out,RGB LED red (series resistor),1,LEDC PWM; external JTAG not used
-GPIO3,right,9,LED_G,out,RGB LED green (series resistor),1,LEDC PWM
-GPIO6,right,12,LED_B,out,RGB LED blue (series resistor),1,LEDC PWM
-GPIO47,right,15,MIDI_TX,out,TRS MIDI OUT,2,reserved for carrier board
-GPIO48,right,16,MIDI_RX,in,TRS MIDI IN (H11L1),2,reserved for carrier board
-GPIO4,left,12,spare,,,,free
-GPIO5,left,11,spare,,,,free
-GPIO33,left,24,spare,,,,free
-GPIO7,left,3,I2C_SDA,bidir,onboard ES8311 + DSI touch (GT911),onboard,do not use for anything else
-GPIO8,left,5,I2C_SCL,out,onboard ES8311 + DSI touch (GT911),onboard,do not use for anything else
-GPIO53,right,14,PA_CTRL,out,onboard NS4150B speaker amplifier,onboard,do not use
-GPIO37,left,8,UART0_TXD,out,CH343 USB-UART (serial log),onboard,console; strapping pin
-GPIO38,left,10,UART0_RXD,in,CH343 USB-UART (serial log),onboard,console; strapping pin
-GPIO36,left,26,avoid,,,,strapping pin
-GPIO0,right,6,avoid,,,,XTAL_32K_N
-GPIO1,right,8,avoid,,,,XTAL_32K_P
-GPIO24,left,18,avoid,,,,USB1P1_N0 (USB full-speed PHY)
-GPIO25,left,19,avoid,,,,USB1P1_P0 (USB full-speed PHY)
-GPIO26,left,21,avoid,,,,USB1P1_N1 (USB full-speed PHY)
-GPIO27,left,22,avoid,,,,USB1P1_P1 (USB full-speed PHY)
+GPIO21,J3,15,I2S_MCLK,out,PCM5102A SCK + PCM1808 SCK,1,12.288 MHz at 48 kHz (256 fs)
+GPIO22,J3,17,I2S_BCLK,out,PCM5102A BCK + PCM1808 BCK,1,P4 is I2S clock master
+GPIO28,J3,16,I2S_WS,out,PCM5102A LCK + PCM1808 LRC,1,
+GPIO5,J3,11,I2S_DOUT,out,PCM5102A DIN,1,
+GPIO4,J3,14,I2S_DIN,in,PCM1808 OUT,1,
+GPIO47,J3,37,ENC_A,in,EC11 A,1,internal pull-up
+GPIO52,J3,38,ENC_B,in,EC11 B,1,internal pull-up
+GPIO48,J3,39,ENC_SW,in,EC11 switch,1,internal pull-up; hold at boot = safe mode
+GPIO32,J3,31,LED_R,out,RGB LED red (series resistor),1,LEDC PWM
+GPIO49,J3,32,LED_G,out,RGB LED green (series resistor),1,LEDC PWM
+GPIO50,J3,34,LED_B,out,RGB LED blue (series resistor),1,LEDC PWM
+GPIO46,J3,35,MIDI_TX,out,TRS MIDI OUT,2,reserved for carrier board
+GPIO51,J3,36,MIDI_RX,in,TRS MIDI IN (H11L1),2,reserved for carrier board
+USBD_N,J3,25,USB_HS_DM,bidir,carrier USB-A host port D-,2,dedicated USB 2.0 HS OTG pin (not a GPIO); shared with the onboard OTG Type-C
+USBD_P,J3,27,USB_HS_DP,bidir,carrier USB-A host port D+,2,dedicated USB 2.0 HS OTG pin (not a GPIO); shared with the onboard OTG Type-C
+GPIO3,J3,12,spare,,,,free
+GPIO29,J3,20,spare,,,,free
+GPIO30,J3,22,spare,,,,free
+GPIO31,J3,24,spare,,,,free
+GPIO7,J3,4,I2C_SDA,bidir,onboard ES8311 + ES7210 + touch (GT911),onboard,do not use for anything else
+GPIO8,J3,6,I2C_SCL,out,onboard ES8311 + ES7210 + touch (GT911),onboard,do not use for anything else
+GPIO37,J3,7,UART0_TXD,out,onboard USB-UART (serial log),onboard,console; strapping pin
+GPIO38,J3,9,UART0_RXD,in,onboard USB-UART (serial log),onboard,console; strapping pin
+GPIO2,J3,8,avoid,,,,touch INT through R35 (fitted or not depending on the unit)
+GPIO34,J3,28,avoid,,,,strapping pin
+GPIO35,J3,30,avoid,,,,strapping pin
+GPIO24,J3,21,avoid,,,,USB1P1_N (USB full-speed PHY)
+GPIO25,J3,23,avoid,,,,USB1P1_P (USB full-speed PHY)
+GPIO9-13,-,-,I2S_CODEC,,onboard ES8311/ES7210 (MCLK 13; SCLK 12; LRCK 10; DOUT 9; DIN 11),onboard,not on the header
+GPIO53,-,-,PA_CTRL,out,onboard NS4150B speaker amplifier,onboard,not on the header
+GPIO23,-,-,TP_RST,out,onboard touch reset,onboard,not on the header
+GPIO26,-,-,LCD_BL_PWM,out,onboard backlight PWM,onboard,not on the header
+GPIO27,-,-,LCD_RST,out,onboard LCD reset,onboard,not on the header
+GPIO33,-,-,BL_EN,out,onboard backlight enable,onboard,not on the header
+GPIO39-44,-,-,SDMMC,,onboard microSD,onboard,not on the header

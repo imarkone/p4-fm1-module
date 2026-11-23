@@ -17,14 +17,16 @@ Each entry: the decision, why, and what was rejected. Newest decisions are added
 - **Why:** Felucca is GPL-3.0-only, so the combined firmware must be GPL-3.0. The hardware gets the equivalent
   strongly reciprocal hardware licence.
 
-## D3. Main board: Waveshare ESP32-P4-NANO
+## D3. Main board: Waveshare ESP32-P4-NANO (superseded by D18)
+
+> Replaced by the ESP32-P4-WIFI6-Touch-LCD-4.3 board with a built-in display. Kept for history.
 
 - **Why:** ESP32-P4 + ESP32-C6, 32 MB PSRAM, microSD, MIPI-DSI, USB 2.0 HS OTG on a Type-A port (USB host for the
   controller), pin headers for a carrier board.
 - **Rejected:** M5Stack Tab5 (tablet form factor), ESP32-P4 Knob (single encoder, older co-processor),
   Waveshare ESP32-P4-WIFI6-Touch-LCD-4B (720×720 = exact 3× scale, but only 5 free GPIOs and mono ES8311).
 
-## D4. Display: 4" MIPI-DSI 480×800 touch
+## D4. Display: 480×800 MIPI-DSI touch (size changed to 4.3" by D18)
 
 - **Why:** the FM-1 screen is 240×240. At an exact 2× scale it fills 480×480, leaving a 480×320 strip for extra views.
   Touch allows settings (e.g. MIDI channels) without extra controls.
@@ -98,7 +100,7 @@ so the 3D-printed front panel lines up.
 
 - EC11 encoder with push button and one RGB status LED, directly on GPIO (no module).
 - Uses: hold at boot = safe mode / settings reset; menu navigation if touch fails.
-- Real debugging is the serial log over the P4-NANO USB-C UART. The LED shows state when the display is dead
+- Real debugging is the serial log over the main board's USB-C UART. The LED shows state when the display is dead
   (boot OK, no audio, no MIDI device, display error).
 - Settings and mappings are CSV files on microSD, editable on a PC when everything else fails.
 
@@ -114,17 +116,19 @@ No battery in v1.
 
 ## D14. Stage 1 is a wired prototype with ready-made modules
 
-- **Decision:** before any PCB, bring up P4-NANO + 4" DSI display + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
+- **Decision:** before any PCB, bring up the ESP32-P4 4.3" display board + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
   on jumper wires. See [stage1-prototype.md](stage1-prototype.md).
 - **Why:** proves display, audio clocking, USB host and controls cheaply; the carrier board follows what works.
 - **Pin allocation:** [pinmap.csv](pinmap.csv) is the single source of truth for firmware and KiCad.
 
 ## D15. Status LED: common-cathode RGB LED on three PWM pins, not WS2812
 
-- **Why:** the P4-NANO has only a power LED. WS2812 needs ≥3.5 V supply and a data level above 3.3 V logic;
+- **Why:** the main board has only a power LED. WS2812 needs ≥3.5 V supply and a data level above 3.3 V logic;
   a plain RGB LED runs directly from 3.3 V GPIOs, also as a through-hole part on the carrier board.
 
-## D16. Display 4-DSI-TOUCH-A confirmed for ESP32-P4
+## D16. Display 4-DSI-TOUCH-A confirmed for ESP32-P4 (superseded by D18)
+
+> The separate 4" panel is no longer used; the 4.3" panel is part of the D18 board. Kept for history.
 
 - Waveshare's `esp32_p4_platform` BSP lists 4-DSI-TOUCH-A (ST7701, `esp_lcd_st7701`) as tested.
 - The panel is natively portrait 480×800: the FM-1 240×240 frame at 2× fills the top 480×480, leaving 480×320 below
@@ -133,9 +137,34 @@ No battery in v1.
 
 ## D17. Stage 1 without a breadboard: soldered pigtails with Dupont connectors
 
-- **Decision:** no breadboard. Modules connect to the P4-NANO header with female–female jumper wires. The RGB LED
+- **Decision:** no breadboard. Modules connect to the main board header with female–female jumper wires. The RGB LED
   with its resistors and the encoder get soldered pigtails ending in Dupont female contacts; the LED plugs on as one
-  2×2 housing on R9–R12.
+  2×2 housing on J3 pins 31–34, the encoder as one on pins 37–40.
 - **Why:** a breadboard comes apart when carried or knocked and adds unreliable contacts while debugging.
   Soldered pigtails survive transport and testing.
 - **Carrier board:** the LED, resistors and encoder are on the PCB; users wire nothing by hand.
+
+## D18. Main board: Waveshare ESP32-P4-WIFI6-Touch-LCD-4.3 (WS-33874)
+
+- **Decision:** replaces the P4-NANO and the separate 4" panel (D3, D16). An ESP32-P4 board fixed to the back of a
+  4.3" 480×800 ST7701/GT911 touch panel, with a 40-pin header (J3). The carrier board plugs onto J3 from behind.
+- **Why:**
+  - one part instead of two, about €19 cheaper (rlx: €36.78 vs €21.19 + €34.32);
+  - no DSI ribbon and no separate display power lead;
+  - same resolution and the same display controller, so the FM-1 240×240 frame at 2× still fills 480×480;
+  - the carrier board just plugs in: a builder does not decide what goes where;
+  - Ethernet is not needed.
+- **GPIO:** 17 free GPIOs on J3 (3, 4, 5, 21, 22, 28–32, 46–52); the design needs 13 (I2S 5, encoder 3, LED 3,
+  MIDI 2). Allocation in [pinmap.csv](pinmap.csv). Onboard and not on J3: ES8311/ES7210 on GPIO9–13, amplifier
+  GPIO53, LCD/backlight/touch reset GPIO23/26/27/33, microSD GPIO39–44.
+- **USB host:** the OTG Type-C does not output 5 V (its VBUS only feeds the board through an ideal diode,
+  AO3401 + MMDT3906). The HS OTG data lines are also on J3 pins 25/27; the carrier board carries a USB-A host port
+  with VBUS from the carrier supply. The SMK-25 II is a full-speed device, so routing over the header is not
+  critical. Stage 1 uses a powered hub.
+- **Power (D13 unchanged):** the carrier feeds 5 V into J3 pins 1/3 (VCC_5V). Every 5 V source on the board enters
+  VCC_5V through its own ideal diode, so the USB-UART port can stay connected for flashing without back-feeding.
+- **Open point:** a push-button power controller (ECJ23001) sits between VCC_5V and the system supply. Whether the
+  board starts on its own when 5 V appears is checked on the first power-up; the carrier design depends on it.
+- **Not used:** onboard speaker and amplifier, microphones, camera connector, battery connector (no battery in v1).
+- **Source:** Waveshare schematic Rev1.2 and the BSP hardware audit in
+  [waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3](https://github.com/waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3).

@@ -20,8 +20,7 @@ off-the-shelf USB-MIDI controller is mapped onto the FM-1 panel through an edita
 
 | Block | Part |
 |---|---|
-| Main board | Waveshare ESP32-P4-NANO (ESP32-P4 + ESP32-C6, 32 MB PSRAM, microSD, USB-A host) |
-| Display | Waveshare 4" MIPI-DSI 480×800 touch (FM-1 240×240 screen shown at exact 2× scale) |
+| Main board + display | Waveshare ESP32-P4-WIFI6-Touch-LCD-4.3 (ESP32-P4 + ESP32-C6, 32 MB PSRAM, microSD, built-in 4.3" 480×800 touch panel; FM-1 240×240 screen shown at exact 2× scale) |
 | Audio out | PCM5102A DAC module (line out) |
 | Audio in | PCM1808 ADC module (line in, protected, 0 / −12 dB pad) |
 | Headphones | NJM4556AD (DIP-8) headphone driver |
@@ -36,7 +35,7 @@ The carrier board is **through-hole only**, so it can be hand-soldered. The fron
 
 | Path | Content |
 |---|---|
-| `hardware/kicad/` | Carrier board for the P4-NANO (KiCad) |
+| `hardware/kicad/` | Carrier board, plugs onto the 40-pin header of the main board (KiCad) |
 | `hardware/enclosure/` | Parametric 3D enclosure and front panel |
 | `firmware/` | ESP-IDF project, ESP32-P4 board support layer |
 | `mapping/` | CSV controller profiles (MIDI message → FM-1 panel control) |

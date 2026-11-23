@@ -5,16 +5,16 @@
 Cieľ: rozbehať jadro systému z hotových modulov a prepojovacích káblikov skôr, než navrhneme akékoľvek PCB.
 Všetko, čo sa tu naučíme, ide do nosnej dosky. Pri rozdiele platí anglická verzia.
 
-Bez breadboardu: kontakty v ňom sa ľahko uvoľnia a zostava sa nedá prenášať. Moduly idú na lištu P4-NANO
+Bez breadboardu: kontakty v ňom sa ľahko uvoľnia a zostava sa nedá prenášať. Moduly idú na 40-pinovú lištu
 káblikmi samica–samica; LED a enkóder majú prispájkované vývody zakončené Dupont samicami
 (pozri [Spôsob zapojenia](#spôsob-zapojenia)).
 
 ## Čo etapa 1 overí
 
-1. Displej: obraz FM-1 240×240 v 2× zväčšení na 4" DSI paneli, funkčný dotyk.
+1. Displej: obraz FM-1 240×240 v 2× zväčšení na vstavanom 4.3" paneli, funkčný dotyk.
 2. Zvuk: jedna I2S zbernica, P4 je zdroj hodín; PCM5102A hrá, PCM1808 nahráva, obe synchrónne.
 3. Ovládanie: enkóder EC11 s tlačidlom, RGB stavová LED.
-4. USB host: SMK-25 II zapojený do USB-A na P4-NANO, MIDI správy viditeľné v sériovom logu.
+4. USB host: SMK-25 II na OTG porte, MIDI správy viditeľné v sériovom logu.
 
 MIDI cez TRS (IN/OUT) je etapa 2 (nosná doska); piny sú už rezervované.
 
@@ -22,135 +22,129 @@ MIDI cez TRS (IN/OUT) je etapa 2 (nosná doska); piny sú už rezervované.
 
 | Diel | Poznámka |
 |---|---|
-| Waveshare ESP32-P4-NANO | samčie lišty 2×13 na oboch stranách; Type-C na napájanie, nahrávanie a sériový log |
-| Waveshare 4-DSI-TOUCH-A (4", 480×800) | ST7701 + GT911. Waveshare BSP `esp32_p4_platform` ho uvádza ako otestovaný. Potrebuje 5 V, ≥180 mA. Rozmer 108.30 × 65.10 mm, aktívna plocha 86.40 × 51.84 mm |
+| Waveshare ESP32-P4-WIFI6-Touch-LCD-4.3 (WS-33874) | doska ESP32-P4 pripevnená na zadnej strane 4.3" dotykového panelu 480×800 (ST7701 + GT911). 40-pinová lišta (J3). Dva Type-C: USB-UART (napájanie, nahrávanie, sériový log) a USB 2.0 HS OTG |
 | modul PCM5102A (typ GY-PCM5102, fialový, s 3.5 mm jackom) | linkový výstup |
 | modul PCM1808 | linkový vstup; potrebuje 5 V (analóg) a 3.3 V (digitál) |
-| enkóder EC11 s tlačidlom | prispájkované vývody, 4 vodiče |
-| 5 mm RGB LED, spoločná katóda | + 3 odpory, prispájkované vývody, 4 vodiče |
-| káblíky samica–samica, 20 cm | moduly na lištu P4-NANO |
-| M-VAVE SMK-25 II | do USB-A na P4-NANO |
+| enkóder EC11 s tlačidlom | prispájkované vývody, 4 vodiče, jedno Dupont puzdro 2×2 |
+| 5 mm RGB LED, spoločná katóda | + 3 odpory v kábli, 4 vodiče, jedno Dupont puzdro 2×2 |
+| káblíky samica–samica, 20 cm | moduly na 40-pinovú lištu |
+| USB hub s vlastným napájaním alebo USB-C OTG redukcia s napájacím vstupom | OTG port nedáva 5 V (pozri [Ovládač](#ovládač)) |
+| M-VAVE SMK-25 II | USB-MIDI ovládač |
 
 ### Prečo obyčajná RGB LED a nie WS2812
 
-P4-NANO nemá používateľskú LED (len LED napájania). WS2812 potrebuje napájanie aspoň 3.5 V a jej dátový vstup
+Doska nemá používateľskú LED (len LED napájania). WS2812 potrebuje napájanie aspoň 3.5 V a jej dátový vstup
 čaká asi 0.7 × VDD, čo je nad 3.3 V logikou P4. RGB LED so spoločnou katódou na troch PWM pinoch funguje na 3.3 V
 bez prevodníka úrovní a bez časovania. Nosná doska použije ten istý diel (THT).
 
-## Rozloženie líšt P4-NANO (pohľad zhora, podľa Waveshare)
+## 40-pinová lišta J3 (číslovanie podľa potlače Waveshare)
 
-Ľavá lišta (piny 1–26, nepárne = vonkajší rad, párne = vnútorný rad):
-
-| Pin | Signál | Pin | Signál |
-|---|---|---|---|
-| 1 | 3V3 | 2 | 5V |
-| 3 | GPIO7 (I2C SDA, na doske) | 4 | 5V |
-| 5 | GPIO8 (I2C SCL, na doske) | 6 | GND |
-| 7 | GPIO23 | 8 | GPIO37 (UART0 TX, konzola) |
-| 9 | GND | 10 | GPIO38 (UART0 RX, konzola) |
-| 11 | GPIO5 | 12 | GPIO4 |
-| 13 | GPIO20 | 14 | GND |
-| 15 | GPIO21 | 16 | GPIO22 |
-| 17 | 3V3 | 18 | GPIO24 (USB FS) |
-| 19 | GPIO25 (USB FS) | 20 | GND |
-| 21 | GPIO26 (USB FS) | 22 | GPIO27 (USB FS) |
-| 23 | GPIO32 | 24 | GPIO33 |
-| 25 | GND | 26 | GPIO36 (strapping) |
-
-Pravá lišta:
+Pin 1 je tu 5 V, nie 3.3 V ako na Raspberry Pi. Pred zapojením skontroluj potlač.
 
 | Pin | Signál | Pin | Signál |
 |---|---|---|---|
-| 1 | 5V | 2 | ESP_LDO_VO4 |
-| 3 | GND | 4 | GND |
-| 5 | 3V3 | 6 | GPIO0 (kryštál 32k) |
-| 7 | GND | 8 | GPIO1 (kryštál 32k) |
-| 9 | GPIO3 | 10 | GND |
-| 11 | GPIO2 | 12 | GPIO6 |
-| 13 | GPIO54 | 14 | GPIO53 (zapnutie zosilňovača reproduktora na doske) |
-| 15 | GPIO47 | 16 | GPIO48 |
-| 17 | GPIO46 | 18 | GND |
-| 19 | GPIO45 | 20 | C6_U0RXD |
-| 21 | C6_IO12 | 22 | C6_U0TXD |
-| 23 | C6_IO13 | 24 | C6_IO9 |
-| 25 | GND | 26 | GND |
+| 1 | 5V (VCC_5V) | 2 | 3V3 |
+| 3 | 5V (VCC_5V) | 4 | GPIO7 (I2C SDA, na doske) |
+| 5 | GND | 6 | GPIO8 (I2C SCL, na doske) |
+| 7 | GPIO37 (TX konzoly) | 8 | GPIO2 (INT dotyku, nepoužívať) |
+| 9 | GPIO38 (RX konzoly) | 10 | GND |
+| 11 | GPIO5 | 12 | GPIO3 |
+| 13 | GND | 14 | GPIO4 |
+| 15 | GPIO21 | 16 | GPIO28 |
+| 17 | GPIO22 | 18 | 3V3 |
+| 19 | GND | 20 | GPIO29 |
+| 21 | GPIO24 (USB FS) | 22 | GPIO30 |
+| 23 | GPIO25 (USB FS) | 24 | GPIO31 |
+| 25 | USBD_N (USB HS OTG, nie GPIO) | 26 | GND |
+| 27 | USBD_P (USB HS OTG, nie GPIO) | 28 | GPIO34 (strapping) |
+| 29 | GND | 30 | GPIO35 (strapping) |
+| 31 | GPIO32 | 32 | GPIO49 |
+| 33 | GND | 34 | GPIO50 |
+| 35 | GPIO46 | 36 | GPIO51 |
+| 37 | GPIO47 | 38 | GPIO52 |
+| 39 | GPIO48 | 40 | GND |
 
-Na doske, mimo líšt: I2S kodeku ES8311 na GPIO9–13, microSD na GPIO39–44, Ethernet, ESP32-C6 cez SDIO.
+Na doske, mimo lišty: I2S kodeku ES8311/ES7210 na GPIO9–13, zapnutie zosilňovača GPIO53, reset LCD GPIO27,
+podsvietenie GPIO26/GPIO33, reset dotyku GPIO23, microSD na GPIO39–44, ESP32-C6 cez SDIO.
 
-Strojovo čitateľné pridelenie pinov je v [pinmap.csv](pinmap.csv); firmvér aj KiCad návrh sa ním riadia.
+Strojovo čitateľné pridelenie je [pinmap.csv](pinmap.csv); firmvér aj návrh v KiCade sa riadia ním.
 
 ## Zapojenie
 
 ### Zvuk (jedna I2S zbernica, P4 je master)
 
-| Signál | GPIO na P4 (pin lišty) | modul PCM5102A | modul PCM1808 |
+| Signál | GPIO na P4 (pin J3) | modul PCM5102A | modul PCM1808 |
 |---|---|---|---|
-| MCLK | GPIO20 (Ľ13) | SCK | SCK |
-| BCLK | GPIO21 (Ľ15) | BCK | BCK |
-| WS / LRCK | GPIO22 (Ľ16) | LCK | LRC |
-| Dáta do DAC | GPIO23 (Ľ7) | DIN | – |
-| Dáta z ADC | GPIO32 (Ľ23) | – | OUT |
-| 3.3 V | 3V3 (Ľ17) | VIN | 3.3V |
-| 5 V | 5V (Ľ2/Ľ4) | – | +5V |
-| GND | GND | GND | GND |
+| MCLK | GPIO21 (15) | SCK | SCK |
+| BCLK | GPIO22 (17) | BCK | BCK |
+| WS / LRCK | GPIO28 (16) | LCK | LRC |
+| dáta do DAC | GPIO5 (11) | DIN | – |
+| dáta z ADC | GPIO4 (14) | – | OUT |
+| 3.3 V | 3V3 (2, 18) | VIN | 3.3V |
+| 5 V | 5V (1, 3) | – | +5V |
+| GND | GND (5, 13, 19) | GND | GND |
 
 Nastavenie modulov:
 
 - **PCM5102A (GY-PCM5102):** na zadnej strane zaletuj štyri mostíky: FLT = L, DEMP = L, XSMT = H (zrušenie stlmenia),
   FMT = L (I2S). Ak XSMT ostane rozpojený, modul je ticho.
-- **PCM1808:** MD0 = L, MD1 = L (slave režim), FMT = L (I2S); na module LaskaKit je FMT popísaný ako „PMT“. Čip berie systémové hodiny 256, 384 alebo 512 fs;
-  firmvér pošle 256 fs.
+- **PCM1808:** MD0 = L, MD1 = L (slave režim), FMT = L (I2S); na module LaskaKit je FMT popísaný ako „PMT“.
+  Čip berie systémové hodiny 256, 384 alebo 512 fs; firmvér pošle 256 fs.
 
 ### Enkóder a LED
 
-| Diel | GPIO na P4 (pin lišty) | Poznámka |
+| Diel | GPIO na P4 (pin J3) | Poznámka |
 |---|---|---|
-| EC11 A | GPIO45 (P19) | interné pull-upy |
-| EC11 B | GPIO46 (P17) | |
-| EC11 tlačidlo | GPIO54 (P13) | |
-| stredný pin EC11 + druhý pin tlačidla | GND (P18) | spoj oba na strane enkódera, jeden vodič |
-| LED červená | GPIO2 (P11) | cez 220 Ω |
-| LED zelená | GPIO3 (P9) | cez 100 Ω |
-| LED modrá | GPIO6 (P12) | cez 100 Ω |
-| spoločná katóda LED | GND (P10) | |
+| LED červená | GPIO32 (31) | cez 220 Ω |
+| LED zelená | GPIO49 (32) | cez 100 Ω |
+| spoločná katóda LED | GND (33) | |
+| LED modrá | GPIO50 (34) | cez 100 Ω |
+| EC11 A | GPIO47 (37) | interné pull-upy |
+| EC11 B | GPIO52 (38) | |
+| EC11 tlačidlo | GPIO48 (39) | |
+| stredný pin EC11 + druhý pin tlačidla | GND (40) | spoj oba na strane enkódera, jeden vodič |
 
 Hodnoty odporov držia každú farbu na asi 3–6 mA z 3.3 V (červená Vf ≈ 2 V, zelená/modrá Vf ≈ 3 V).
 
 ### Spôsob zapojenia
 
 - **LED:** tri odpory sú priamo v kábli, vo vodičoch R, G a B (prispájkované, pod zmršťovačkou); štyri vodiče
-  končia Dupont samicami. P9 (G), P10 (GND), P11 (R) a P12 (B) tvoria na pravej lište blok 2×2, takže jedno Dupont puzdro 2×2
-  nasadí celú LED naraz a nedá sa nasadiť posunuté o rad.
-- **Enkóder:** štyri vodiče (A, B, tlačidlo, GND) s Dupont samicami na P19, P17, P13 a P18. Na strane enkódera
-  sú stredný pin a druhý pin tlačidla spojené, takže stačí jeden vodič GND.
-- **Moduly:** káblikmi samica–samica z pinov modulu na lištu P4-NANO.
+  končia jedným Dupont puzdrom 2×2 na pinoch 31–34. Nasadí sa jedným pohybom a nedá sa nasadiť posunuté o rad.
+- **Enkóder:** štyri vodiče v jednom Dupont puzdre 2×2 na pinoch 37–40. Na strane enkódera sú stredný pin a druhý
+  pin tlačidla spojené, takže stačí jeden vodič GND.
+- **Moduly:** káblikmi samica–samica z pinov modulu na lištu.
 - Na nosnej doske sú LED, odpory aj enkóder prispájkované na PCB; nikto ich nezapája ručne.
 
 ### Displej
 
-DSI kábel z panelu do DSI konektora na P4-NANO. Dotyk (GT911) je na I2C zbernici dosky (GPIO7/8).
-Panel potrebuje 5 V a aspoň 180 mA; pribalený napájací káblik zapoj na pin 5V a GND na lište.
+Je súčasťou dosky. Dotyk (GT911) je na I2C zbernici dosky (GPIO7/8); BSP ho číta periodicky, linka INT sa nepoužíva.
 
 ### Ovládač
 
-SMK-25 II do USB-A na P4-NANO. P4-NANO sa napája z USB-C.
+OTG Type-C nemá výstup 5 V: jeho VBUS napája dosku cez obvod ideálnej diódy (AO3401 + MMDT3906) a spätný prúd je
+zablokovaný. Ovládač zapojený cez obyčajnú OTG redukciu nedostane napájanie. V etape 1 použi USB hub s vlastným
+napájaním alebo USB-C OTG redukciu s napájacím vstupom. Samotná doska sa napája z Type-C USB-UART.
+
+Nosná doska to vyrieši natrvalo: dátové linky HS OTG sú aj na J3 (piny 25/27), takže nosná doska dostane vlastný
+USB-A host port s 5 V zo svojho napájania.
 
 ## Rezervované pre etapu 2 (nosná doska)
 
-| Funkcia | GPIO |
+| Funkcia | pin J3 |
 |---|---|
-| TRS MIDI OUT | GPIO47 (P15) |
-| TRS MIDI IN | GPIO48 (P16) |
-| Voľné | GPIO4, GPIO5, GPIO33 |
+| TRS MIDI OUT | GPIO46 (35) |
+| TRS MIDI IN | GPIO51 (36) |
+| USB-A host D− / D+ | USBD_N (25) / USBD_P (27) |
+| napájanie 5 V do dosky | VCC_5V (1, 3) |
+| voľné | GPIO3 (12), GPIO29 (20), GPIO30 (22), GPIO31 (24) |
 
 ## Piny, ktoré nepoužívať
 
-- GPIO7/8: I2C na doske (kodek, dotyk).
-- GPIO53: zapnutie zosilňovača reproduktora na doske.
-- GPIO37/38: UART konzoly (sériový log cez CH343 na USB-C), strapping piny.
-- GPIO36: strapping pin.
-- GPIO0/1: kryštál 32 kHz.
-- GPIO24–27: USB full-speed PHY.
+- GPIO7/8: I2C na doske (kodek, ADC na potlačenie ozveny, dotyk).
+- GPIO37/38: UART konzoly, strapping piny.
+- GPIO34/35: strapping piny.
+- GPIO2: INT dotyku na niektorých kusoch (R35 osadený alebo nie).
+- GPIO24/25: USB full-speed PHY.
 
 ## Známe obmedzenia etapy 1
 
@@ -158,3 +152,5 @@ SMK-25 II do USB-A na P4-NANO. P4-NANO sa napája z USB-C.
 - Výstup modulu PCM5102A je linkový. Zapájaj do linkových vstupov (zvuková karta, aktívne monitory). Slúchadlá len
   potichu, kým nebude stupeň s NJM4556.
 - Linkový vstup zatiaľ nemá ochranu; púšťaj doň len linkovú úroveň.
+- Doska má medzi VCC_5V a napájaním systému tlačidlový vypínač (ECJ23001). Či sa po pripojení 5 V zapne sama, alebo
+  treba stlačiť tlačidlo napájania, sa zistí pri prvom zapnutí.

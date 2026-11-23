@@ -15,14 +15,16 @@ Každý bod: rozhodnutie, prečo, a čo sme zamietli. Nové rozhodnutia pribúda
 
 - **Prečo:** Felucca je GPL-3.0-only, takže spojený firmvér musí byť GPL-3.0. Hardvér dostane obdobnú „recipročnú“ hardvérovú licenciu.
 
-## D3. Hlavná doska: Waveshare ESP32-P4-NANO
+## D3. Hlavná doska: Waveshare ESP32-P4-NANO (nahradené D18)
+
+> Nahradená doskou ESP32-P4-WIFI6-Touch-LCD-4.3 so vstavaným displejom. Ponechané kvôli histórii.
 
 - **Prečo:** ESP32-P4 + ESP32-C6, 32 MB PSRAM, microSD, MIPI-DSI, USB 2.0 HS OTG na porte Type-A (USB host pre ovládač),
   kolíkové lišty pre nosnú dosku.
 - **Zamietnuté:** M5Stack Tab5 (tablet), ESP32-P4 Knob (jeden enkóder, starší koprocesor),
   Waveshare ESP32-P4-WIFI6-Touch-LCD-4B (720×720 = presné 3× zväčšenie, ale len 5 voľných GPIO a mono ES8311).
 
-## D4. Displej: 4" MIPI-DSI 480×800 dotykový
+## D4. Displej: MIPI-DSI 480×800 dotykový (veľkosť zmenená na 4.3" v D18)
 
 - **Prečo:** displej FM-1 má 240×240. Pri presnom 2× zväčšení zaberie 480×480 a ostane pás 480×320 na ďalšie zobrazenia.
   Dotyk umožní nastavenia (napr. MIDI kanály) bez ďalších ovládacích prvkov.
@@ -95,7 +97,7 @@ aby lícovali s 3D tlačeným predným panelom.
 
 - Enkóder EC11 s tlačidlom a jedna RGB stavová LED, priamo na GPIO (bez modulu).
 - Použitie: podržanie pri štarte = bezpečný režim / reset nastavení; ovládanie menu, ak zlyhá dotyk.
-- Skutočné ladenie je sériový log cez USB-C UART na P4-NANO. LED ukáže stav, keď nefunguje displej
+- Skutočné ladenie je sériový log cez USB-C UART na hlavnej doske. LED ukáže stav, keď nefunguje displej
   (boot OK, chýba audio, chýba MIDI zariadenie, chyba displeja).
 - Nastavenia a mapovania sú CSV súbory na microSD, upraviteľné na PC, keď zlyhá všetko ostatné.
 
@@ -111,17 +113,19 @@ Vo v1 bez batérie.
 
 ## D14. Etapa 1 je prototyp na kábloch z hotových modulov
 
-- **Rozhodnutie:** pred akýmkoľvek PCB rozbehať P4-NANO + 4" DSI displej + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
+- **Rozhodnutie:** pred akýmkoľvek PCB rozbehať dosku ESP32-P4 so 4.3" displejom + PCM5102A + PCM1808 + EC11 + RGB LED + SMK-25 II
   na káblikoch. Pozri [stage1-prototype.sk.md](stage1-prototype.sk.md).
 - **Prečo:** lacno overí displej, hodiny zvuku, USB host a ovládanie; nosná doska potom stavia na tom, čo funguje.
 - **Pridelenie pinov:** [pinmap.csv](pinmap.csv) je jediný zdroj pravdy pre firmvér aj KiCad.
 
 ## D15. Stavová LED: RGB LED so spoločnou katódou na troch PWM pinoch, nie WS2812
 
-- **Prečo:** P4-NANO má len LED napájania. WS2812 potrebuje napájanie ≥3.5 V a dátovú úroveň nad 3.3 V logikou;
+- **Prečo:** hlavná doska má len LED napájania. WS2812 potrebuje napájanie ≥3.5 V a dátovú úroveň nad 3.3 V logikou;
   obyčajná RGB LED ide priamo z 3.3 V GPIO, aj ako THT diel na nosnej doske.
 
-## D16. Displej 4-DSI-TOUCH-A potvrdený pre ESP32-P4
+## D16. Displej 4-DSI-TOUCH-A potvrdený pre ESP32-P4 (nahradené D18)
+
+> Samostatný 4" panel sa už nepoužíva; 4.3" panel je súčasťou dosky z D18. Ponechané kvôli histórii.
 
 - Waveshare BSP `esp32_p4_platform` uvádza 4-DSI-TOUCH-A (ST7701, `esp_lcd_st7701`) ako otestovaný.
 - Panel je natívne na výšku 480×800: obraz FM-1 240×240 v 2× zaplní horných 480×480 a pod ním ostane 480×320,
@@ -130,8 +134,32 @@ Vo v1 bez batérie.
 
 ## D17. Etapa 1 bez breadboardu: prispájkované vývody s Dupont konektormi
 
-- **Rozhodnutie:** žiadny breadboard. Moduly idú na lištu P4-NANO káblikmi samica–samica. RGB LED s odpormi
-  a enkóder dostanú prispájkované vývody zakončené Dupont samicami; LED sedí ako jedno puzdro 2×2 na P9–P12.
+- **Rozhodnutie:** žiadny breadboard. Moduly idú na lištu hlavnej dosky káblikmi samica–samica. RGB LED s odpormi
+  a enkóder dostanú prispájkované vývody zakončené Dupont samicami; LED sedí ako jedno puzdro 2×2 na pinoch 31–34 lišty J3, enkóder ako jedno na pinoch 37–40.
 - **Prečo:** breadboard sa pri prenášaní a otrasoch rozpája a pri hľadaní chýb pridáva neistý kontakt.
   Spájkované vývody vydržia prenos aj testovanie.
 - **Nosná doska:** LED, odpory a enkóder sú tam priamo na PCB, používateľ nič ručne nezapája.
+
+## D18. Hlavná doska: Waveshare ESP32-P4-WIFI6-Touch-LCD-4.3 (WS-33874)
+
+- **Rozhodnutie:** nahrádza P4-NANO a samostatný 4" panel (D3, D16). Doska ESP32-P4 pripevnená na zadnej strane
+  4.3" dotykového panelu 480×800 (ST7701/GT911) so 40-pinovou lištou (J3). Nosná doska sa nasadí na J3 zozadu.
+- **Prečo:**
+  - jeden diel namiesto dvoch, asi o 19 € lacnejšie (rlx: 36,78 € oproti 21,19 € + 34,32 €);
+  - žiadny DSI kábel ani samostatné napájanie displeja;
+  - rovnaké rozlíšenie aj radič displeja, obraz FM-1 240×240 v 2× stále zaplní 480×480;
+  - nosná doska sa len zasunie: staviteľ nerieši, čo kam zapojiť;
+  - Ethernet nepotrebujeme.
+- **GPIO:** na J3 je 17 voľných GPIO (3, 4, 5, 21, 22, 28–32, 46–52); návrh potrebuje 13 (I2S 5, enkóder 3, LED 3,
+  MIDI 2). Pridelenie v [pinmap.csv](pinmap.csv). Na doske a mimo J3: ES8311/ES7210 na GPIO9–13, zosilňovač
+  GPIO53, LCD/podsvietenie/reset dotyku GPIO23/26/27/33, microSD GPIO39–44.
+- **USB host:** OTG Type-C nedáva von 5 V (jeho VBUS len napája dosku cez ideálnu diódu, AO3401 + MMDT3906).
+  Dátové linky HS OTG sú aj na pinoch 25/27 lišty J3; nosná doska má USB-A host port s VBUS z vlastného napájania.
+  SMK-25 II je full-speed zariadenie, vedenie cez lištu nie je kritické. Etapa 1 použije hub s napájaním.
+- **Napájanie (D13 bez zmeny):** nosná doska privádza 5 V na piny 1/3 lišty J3 (VCC_5V). Každý zdroj 5 V na doske
+  vstupuje do VCC_5V cez vlastnú ideálnu diódu, takže USB-UART môže ostať pripojený na nahrávanie bez spätného napájania.
+- **Otvorený bod:** medzi VCC_5V a napájaním systému je tlačidlový vypínač (ECJ23001). Či sa doska po privedení 5 V
+  zapne sama, sa zistí pri prvom zapnutí; návrh nosnej dosky od toho závisí.
+- **Nepoužíva sa:** reproduktor a zosilňovač na doske, mikrofóny, konektor kamery, konektor batérie (v1 bez batérie).
+- **Zdroj:** schéma Waveshare Rev1.2 a audit hardvéru BSP v
+  [waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3](https://github.com/waveshareteam/ESP32-P4-WIFI6-Touch-LCD-4.3).

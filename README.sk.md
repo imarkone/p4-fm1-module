@@ -20,8 +20,7 @@ bežný USB-MIDI ovládač mapuje na panel FM-1 cez upraviteľný CSV profil.
 
 | Blok | Diel |
 |---|---|
-| Hlavná doska | Waveshare ESP32-P4-NANO (ESP32-P4 + ESP32-C6, 32 MB PSRAM, microSD, USB-A host) |
-| Displej | Waveshare 4" MIPI-DSI 480×800 dotykový (obraz FM-1 240×240 v presnom 2× zväčšení) |
+| Hlavná doska + displej | Waveshare ESP32-P4-WIFI6-Touch-LCD-4.3 (ESP32-P4 + ESP32-C6, 32 MB PSRAM, microSD, vstavaný 4.3" dotykový panel 480×800; obraz FM-1 240×240 v presnom 2× zväčšení) |
 | Audio výstup | modul DAC PCM5102A (linkový výstup) |
 | Audio vstup | modul ADC PCM1808 (linkový vstup s ochranou, útlm 0 / −12 dB) |
 | Slúchadlá | zosilňovač NJM4556AD (DIP-8) |
@@ -36,7 +35,7 @@ Nosná doska je **len THT (vývodové súčiastky)**, dá sa spájkovať ručne.
 
 | Cesta | Obsah |
 |---|---|
-| `hardware/kicad/` | Nosná doska pre P4-NANO (KiCad) |
+| `hardware/kicad/` | Nosná doska, nasadí sa na 40-pinovú lištu hlavnej dosky (KiCad) |
 | `hardware/enclosure/` | Parametrická 3D krabica a predný panel |
 | `firmware/` | ESP-IDF projekt, hardvérová vrstva pre ESP32-P4 |
 | `mapping/` | CSV profily ovládačov (MIDI správa → ovládací prvok FM-1) |
