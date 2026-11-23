@@ -94,7 +94,7 @@ Module configuration:
 
 - **PCM5102A (GY-PCM5102):** set the four solder bridges on the back: FLT = L, DEMP = L, XSMT = H (unmute),
   FMT = L (I2S). With XSMT left open the module is silent.
-- **PCM1808:** MD0 = L, MD1 = L (slave mode), FMT = L (I2S). The chip accepts a system clock of 256, 384 or 512 fs;
+- **PCM1808:** MD0 = L, MD1 = L (slave mode), FMT = L (I2S); on the LaskaKit module FMT is printed as "PMT". The chip accepts a system clock of 256, 384 or 512 fs;
   firmware drives 256 fs.
 
 ### Encoder and LED
@@ -105,11 +105,11 @@ Module configuration:
 | EC11 B | GPIO46 (R17) | |
 | EC11 switch | GPIO54 (R13) | Other switch pin to GND |
 | LED red | GPIO2 (R11) | via 220 Ω |
-| LED green | GPIO3 (R9) | via 68 Ω |
-| LED blue | GPIO6 (R12) | via 68 Ω |
+| LED green | GPIO3 (R9) | via 100 Ω |
+| LED blue | GPIO6 (R12) | via 100 Ω |
 | LED common cathode | GND | |
 
-Resistor values keep each colour at roughly 4–6 mA from 3.3 V (red Vf ≈ 2 V, green/blue Vf ≈ 3 V).
+Resistor values keep each colour at roughly 3–6 mA from 3.3 V (red Vf ≈ 2 V, green/blue Vf ≈ 3 V).
 
 ### Display
 

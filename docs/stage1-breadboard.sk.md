@@ -94,7 +94,7 @@ Nastavenie modulov:
 
 - **PCM5102A (GY-PCM5102):** na zadnej strane zaletuj štyri mostíky: FLT = L, DEMP = L, XSMT = H (zrušenie stlmenia),
   FMT = L (I2S). Ak XSMT ostane rozpojený, modul je ticho.
-- **PCM1808:** MD0 = L, MD1 = L (slave režim), FMT = L (I2S). Čip berie systémové hodiny 256, 384 alebo 512 fs;
+- **PCM1808:** MD0 = L, MD1 = L (slave režim), FMT = L (I2S); na module LaskaKit je FMT popísaný ako „PMT“. Čip berie systémové hodiny 256, 384 alebo 512 fs;
   firmvér pošle 256 fs.
 
 ### Enkóder a LED
@@ -105,11 +105,11 @@ Nastavenie modulov:
 | EC11 B | GPIO46 (P17) | |
 | EC11 tlačidlo | GPIO54 (P13) | druhý pin tlačidla na GND |
 | LED červená | GPIO2 (P11) | cez 220 Ω |
-| LED zelená | GPIO3 (P9) | cez 68 Ω |
-| LED modrá | GPIO6 (P12) | cez 68 Ω |
+| LED zelená | GPIO3 (P9) | cez 100 Ω |
+| LED modrá | GPIO6 (P12) | cez 100 Ω |
 | spoločná katóda LED | GND | |
 
-Hodnoty odporov držia každú farbu na asi 4–6 mA z 3.3 V (červená Vf ≈ 2 V, zelená/modrá Vf ≈ 3 V).
+Hodnoty odporov držia každú farbu na asi 3–6 mA z 3.3 V (červená Vf ≈ 2 V, zelená/modrá Vf ≈ 3 V).
 
 ### Displej
 
