@@ -184,3 +184,15 @@ Vo v1 bez batérie.
   jacky a stupeň NJM4556 (D7, D8). Vlastný 3.5 mm jack modulu smeruje pozdĺž PCB, preto sa nepoužije.
 - **Enkóder a LED ostávajú samostatné THT diely na nosnej doske (D15, D19);** moduly z etapy 1 slúžia len na prototyp.
 - **Otvorený bod:** obrysy modulov a polohy pinov sa odmerajú posuvným meradlom na dodaných moduloch.
+
+## D21. Ciele firmvéru: výber firmvéru zo SD, stavový pás, dotyková testovacia oktáva (nízka priorita)
+
+- **Priorita:** až keď funguje jadro (beží firmvér FM-1, zvuk, mapovanie ovládača).
+- **Výber firmvéru:** pri zapnutí podrž tlačidlo enkódera, enkóderom vyber firmvér z karty microSD, doska sa doň reštartuje.
+- **Bočný pás (320 × 480 px vedľa obrazu FM-1 v 2×, asi 38 × 57 mm):**
+  - normálny režim: stav (MIDI kanál, pripojený ovládač, MIDI clock a BPM, názov firmvéru, záťaž CPU);
+  - testovacia oktáva: prepína sa dlhým stlačením enkódera alebo ťuknutím na pás; jedna oktáva klavíra s klávesmi
+    naprieč pásom (biele asi 8 mm), posun o oktávu hore/dole, voliteľne posuv prstom pre glissando; viacdotykový
+    GT911 dovolí akordy.
+- **Prečo:** zvuk sa dá overiť aj bez ovládača (oživovanie v etape 1, keď USB host ešte nefunguje). Hlavné ovládanie
+  ostáva fyzické; dotyk nie je na hranie naživo.

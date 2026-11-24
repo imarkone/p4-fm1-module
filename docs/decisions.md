@@ -191,3 +191,15 @@ No battery in v1.
 - **Encoder and LED stay discrete THT parts on the carrier (D15, D19);** the stage 1 modules for them are
   prototyping aids only.
 - **Open point:** module outlines and pin positions are taken from the delivered modules with a caliper.
+
+## D21. Firmware goals: SD firmware selector, status strip, touch test octave (low priority)
+
+- **Priority:** after the core works (FM-1 firmware running, audio, controller mapping).
+- **Firmware selector:** hold the encoder button at power-up, choose a firmware image from the microSD card with the
+  encoder, the board reboots into it.
+- **Side strip (320 × 480 px next to the 2× FM-1 frame, about 38 × 57 mm):**
+  - normal mode: status (MIDI channel, controller connected, MIDI clock and BPM, firmware name, CPU load);
+  - test octave: toggled by a long press of the encoder or a tap on the strip; one piano octave with keys across the
+    strip (white keys about 8 mm), octave up/down, optional finger glide for glissando; GT911 multi-touch allows chords.
+- **Why:** lets the sound be checked without a controller (stage 1 bring-up, USB host not yet working). Physical
+  controls stay primary; touch is not meant for live playing.
