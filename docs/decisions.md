@@ -203,3 +203,16 @@ No battery in v1.
     strip (white keys about 8 mm), octave up/down, optional finger glide for glissando; GT911 multi-touch allows chords.
 - **Why:** lets the sound be checked without a controller (stage 1 bring-up, USB host not yet working). Physical
   controls stay primary; touch is not meant for live playing.
+
+## D5a. Mapping engine taken from fm1buddy (addendum to D5)
+
+- **Decision:** the MIDI mapping rule engine (`midimap.cpp/.h`) and the USB MIDI hub logic are adapted from
+  [konsumer/fm1buddy](https://github.com/konsumer/fm1buddy) (GPL-3.0-only, compatible with this project), with
+  attribution in LICENSING.
+- **Storage:** one CSV file per controller (`mapping/<controller>.csv`), columns following fm1buddy's rule fields
+  (from, channel, type, number or range → to, channel, type, number, transpose, velocity). A converter reads and
+  writes fm1buddy's `midimap.txt` format so existing community maps can be used.
+- **Shipped maps:** Launchkey Mini and Launchkey (owned by the maintainer, so tested), Novation Circuit Tracks;
+  SMK-25 II when available.
+- **Not taken:** fm1buddy's FM-1 firmware catalogue and flashing (binaries for the FM-1's JieLi CPU, they do not run
+  on the P4) and its LVGL UI (320×240).

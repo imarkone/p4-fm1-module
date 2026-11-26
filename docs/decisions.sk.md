@@ -196,3 +196,16 @@ Vo v1 bez batérie.
     GT911 dovolí akordy.
 - **Prečo:** zvuk sa dá overiť aj bez ovládača (oživovanie v etape 1, keď USB host ešte nefunguje). Hlavné ovládanie
   ostáva fyzické; dotyk nie je na hranie naživo.
+
+## D5a. Mapovací engine prevzatý z fm1buddy (doplnok k D5)
+
+- **Rozhodnutie:** engine pravidiel mapovania MIDI (`midimap.cpp/.h`) a logika USB MIDI hubu sa prevezmú a upravia
+  z [konsumer/fm1buddy](https://github.com/konsumer/fm1buddy) (GPL-3.0-only, zlučiteľná s týmto projektom),
+  s uvedením autorstva v LICENSING.
+- **Ukladanie:** jeden CSV súbor na ovládač (`mapping/<ovládač>.csv`), stĺpce podľa polí pravidiel fm1buddy
+  (odkiaľ, kanál, typ, číslo alebo rozsah → kam, kanál, typ, číslo, transpozícia, velocity). Konvertor číta
+  a zapisuje formát `midimap.txt` z fm1buddy, aby sa dali použiť existujúce mapy z komunity.
+- **Dodávané mapy:** Launchkey Mini a Launchkey (má ich správca, takže otestované), Novation Circuit Tracks;
+  SMK-25 II, keď bude k dispozícii.
+- **Nepreberá sa:** katalóg a flashovanie firmvérov FM-1 z fm1buddy (binárky pre JieLi procesor FM-1, na P4 nebežia)
+  ani jeho LVGL rozhranie (320×240).
