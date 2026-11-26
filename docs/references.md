@@ -20,3 +20,5 @@ under GPL-3.0 or CERN-OHL-S.
 | ESP32 + PCM5102 I2S DAC (internet radio) | [hackster.io – ESP32 audio project part I](https://www.hackster.io/esikora/esp32-audio-project-part-i-internet-radio-with-i-s-dac-a5515c) |
 | PCM5102 module wiring, SCK and solder bridges | [blog.himbeer.me – PCM5102 on a Raspberry Pi](https://blog.himbeer.me/2018/12/27/how-to-connect-a-pcm5102-i2s-dac-to-your-raspberry-pi/) |
 | KY-016 RGB LED module | [iotguider.in – KY-016](https://iotguider.in/arduino/rgb-3-color-led-module-ky-016-arduino/) |
+| fm1buddy: ESP32-S3 companion for a real FM-1 (firmware switcher, USB MIDI hub, mapping rules, clock, arpeggiator; GPL-3.0-only) | [konsumer/fm1buddy](https://github.com/konsumer/fm1buddy), [page](https://konsumer.js.org/fm1buddy/) |
+| Big Screen: framebuffer over USB MIDI SysEx (MIT) | `lib/fm1core/src/bigscreen.h` in fm1buddy, from [konsumer/foma](https://github.com/konsumer/foma) |
